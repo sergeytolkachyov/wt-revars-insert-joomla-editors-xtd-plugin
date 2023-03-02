@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="editors-xtd" method="upgrade">
+	<name>Editors-xtd - WT Revars insert</name>
+	<author>Sergey Tolkachyov</author>
+	<creationDate>02/03/2023</creationDate>
+	<copyright>(C) Sergey Tolkachyov, 2023</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>info@web-tolk.ru</authorEmail>
+	<authorUrl>https://web-tolk.ru</authorUrl>
+	<version>1.0.0</version>
+	<description>PLG_WTREVARSINSERT_DESC</description>
+	<scriptfile>script.php</scriptfile>
+	<media folder="media" destination="plg_editors-xtd_wtrevarsinsert">
+		<folder>js</folder>
+	</media>
+	<files>
+		<filename plugin="wtrevarsinsert">wtrevarsinsert.php</filename>
+		<folder>fields</folder>
+	</files>
+	<languages folder="language" client="administrator">
+		<language tag="en-GB">en-GB/plg_editors-xtd_wtrevarsinsert.ini</language>
+		<language tag="en-GB">en-GB/plg_editors-xtd_wtrevarsinsert.sys.ini</language>
+		<language tag="ru-RU">ru-RU/plg_editors-xtd_wtrevarsinsert.ini</language>
+		<language tag="ru-RU">ru-RU/plg_editors-xtd_wtrevarsinsert.sys.ini</language>
+	</languages>
+	 <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field addfieldpath="plugins/editors-xtd/wtrevarsinsert/fields" type="plugininfo" name="plugininfo"/>
+            </fieldset>
+        </fields>
+    </config>
+	<updateservers>
+        <server type="extension" name="WebTolk - Wt On Fly image handler">https://web-tolk.ru/component/swjprojects/jupdate.html?element=wtrevarsinsert</server>
+    </updateservers>
+</extension>
