@@ -1,13 +1,14 @@
 <?php
-
 /**
- * @package         WT Revars insert
- *
- * @copyright   (C) 2023 Sergey Tolkachyov <https://web-tolk.ru>
- * @license         GNU General Public License version 2 or later;
- * @phpcs           :disable PSR1.Classes.ClassDeclaration.MissingNamespace
+ * @package     WT Revars insert
+ * @copyright   Copyright (C) 2023-2023 Sergey Tolkachyov. All rights reserved.
+ * @author      Sergey Tolkachyov - https://web-tolk.ru
+ * @link 		https://web-tolk.ru
+ * @version 	1.1.0
+ * @license     GNU General Public License version 2 or later
  */
 
+use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
@@ -28,10 +29,19 @@ use Joomla\CMS\Session\Session;
 class PlgButtonWtrevarsinsert extends CMSPlugin
 {
 	/**
-	 * Load the language file on instantiation.
+	 * Application object
+	 *
+	 * @var    CMSApplication
+	 * @since  1.0.0
+	 */
+	protected $app;
+
+
+	/**
+	 * Affects constructor behavior. If true, language files will be loaded automatically.
 	 *
 	 * @var    boolean
-	 * @since  3.1
+	 * @since  1.0.0
 	 */
 	protected $autoloadLanguage = true;
 
@@ -130,7 +140,37 @@ class PlgButtonWtrevarsinsert extends CMSPlugin
 
 		$revars_params = new Registry($revars->params);
 
-		$revars_variables = $revars_params->get('variables');
+		$revars_variables = (array) $revars_params->get('variables');
+
+		// получаем переменные от сторонних плагинов
+		PluginHelper::importPlugin('revars');
+		$results = $this->app->triggerEvent('onRevarsAddVariables');
+		$additional_plugins_variables = [];
+		if (is_array($results))
+		{
+			foreach ($results as $result)
+			{
+				if (is_array($result))
+				{
+					foreach ($result as $r){
+						$r->thirddparty = true;
+					}
+					$additional_plugins_variables = array_merge($result, $additional_plugins_variables);
+				}
+			}
+		}
+
+
+		if(!empty($additional_plugins_variables))
+		{
+			foreach ($additional_plugins_variables as $variable)
+			{
+				$revars_variables[] = (object) $variable;
+			}
+		}
+
+		$revars_variables = (object)$revars_variables;
+
 		if (count((array) $revars_variables) == 0)
 		{
 			echo '<div class="alert alert-danger">
@@ -150,9 +190,12 @@ class PlgButtonWtrevarsinsert extends CMSPlugin
 		{
 			$joomla_script_options[$i] = $variable->variable;
 			$insert_button_text        = Text::_('PLG_EDITORS-XTD_WTREVARSINSERT_TABLE_INSERT_BUTTON');
+			$third_party_variable = (isset($variable->thirddparty) && !empty($variable->thirddparty)) ? '<span class="badge bg-light text-dark"><i class="fas fa-shapes"></i> 3d-party</span>' : '';
 			$html                      .= <<<HTML
 						<tr>
-								<td class="p-2"><a href="#" class="WtRevarsInsertBtn h4" data-wtrevars-variable="$i">$variable->variable</a><br/><small class="text-muted">$variable->comment</small></td>
+								<td class="p-2"><a href="#" class="WtRevarsInsertBtn h4" data-wtrevars-variable="$i">$variable->variable</a><br/>
+								
+								<small class="text-muted">$third_party_variable $variable->comment</small></td>
 								<td class="p-2">$variable->value</td>
 								<td><button type="button" class="WtRevarsInsertBtn btn btn-sm btn-primary my-auto" data-wtrevars-variable="$i">$insert_button_text</button></td>
 						</tr>
