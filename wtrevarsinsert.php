@@ -180,9 +180,12 @@ class PlgButtonWtrevarsinsert extends CMSPlugin
 
 			return;
 		}
+
+		$value_text_label = Text::_('PLG_EDITORS-XTD_WTREVARSINSERT_TABLE_HEADER_VALUE');
+		$insert_button_text        = Text::_('PLG_EDITORS-XTD_WTREVARSINSERT_TABLE_INSERT_BUTTON');
 		$html                  = '<table class="table table-sm table-hover"><thead><tr>
 		<th>' . Text::_('PLG_EDITORS-XTD_WTREVARSINSERT_TABLE_HEADER_VARIABLE') . '</th>
-		<th>' . Text::_('PLG_EDITORS-XTD_WTREVARSINSERT_TABLE_HEADER_VALUE') . '</th>
+		<th class="w-25">'.$insert_button_text.'</th>
 		</tr></thead><tbody>';
 		$joomla_script_options = [];
 		$i                     = 0;
@@ -191,13 +194,16 @@ class PlgButtonWtrevarsinsert extends CMSPlugin
 			$joomla_script_options[$i] = $variable->variable;
 			$insert_button_text        = Text::_('PLG_EDITORS-XTD_WTREVARSINSERT_TABLE_INSERT_BUTTON');
 			$third_party_variable = (isset($variable->thirddparty) && !empty($variable->thirddparty)) ? '<span class="badge bg-light text-dark"><i class="fas fa-shapes"></i> 3d-party</span>' : '';
+
 			$html                      .= <<<HTML
 						<tr>
-								<td class="p-2"><a href="#" class="WtRevarsInsertBtn h4" data-wtrevars-variable="$i">$variable->variable</a><br/>
-								
-								<small class="text-muted">$third_party_variable $variable->comment</small></td>
-								<td class="p-2">$variable->value</td>
-								<td><button type="button" class="WtRevarsInsertBtn btn btn-sm btn-primary my-auto" data-wtrevars-variable="$i">$insert_button_text</button></td>
+								<td class="p-2"><a href="#" class="WtRevarsInsertBtn h4" data-wtrevars-variable="$i">$variable->variable</a><br/><small class="text-muted">$third_party_variable $variable->comment</small>
+								<details>
+								<summary>$value_text_label</summary>
+								<div class="p-2">$variable->value</div>
+								</details>
+								</td>
+								<td class="w-25"><button type="button" class="WtRevarsInsertBtn btn btn-sm btn-primary my-auto" data-wtrevars-variable="$i">$insert_button_text</button></td>
 						</tr>
 
 						HTML;
